@@ -44,7 +44,6 @@ _kentry:
     mov cr0, eax
 
     lgdt [Pointer]
-    hlt
     jmp GDT64.Code:LM_START
 
 GDT64:                           ; Global Descriptor Table (64-bit).
