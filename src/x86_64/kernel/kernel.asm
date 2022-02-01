@@ -1,16 +1,50 @@
 bits 32
 global _kentry
-extern kpge_dir
-extern init_paging
 
 _kentry:
-    call init_paging
-    mov eax, kpge_dir
-    mov cr3, eax  
+    ; EDI => dest.
+    mov edi, _l4_page_tbl
+    push edi
+    xor eax, eax
+    mov ecx, 1024
+    rep stosd       ; (*EDI++ = EAX) REP = repeat
+
+    mov edi, _l3_page_tbl
+    mov ecx, 1024
+    rep stosd
+
+    pop edi
+    mov cr3, edi                ; Tells CPU where page table is.
+    mov eax, _l3_page_tbl
+    add eax, 3
+    mov [edi], eax
+
+    xor eax, eax
+    mov eax, 3 | (1 << 7) | (1 << 2)       ; Setting entry in l3 page table.
+    mov [_l3_page_tbl], eax
+
+    mov ebx, _l4_page_tbl
+    mov ecx, _l3_page_tbl
+
+    ; Enable PA.
+    mov cr4, eax
+    or eax, 1 << 5
+    mov cr4, eax
+
+    ; Set long mode bit.
+    mov ecx, 0xC0000080
+    rdmsr
+    or eax, 1 << 8
+    wrmsr
+
+    ; Enable paging.
     mov eax, cr0
-    or eax, 0x80000000
+    or eax, (1 << 31) | 0x1
     mov cr0, eax
-    hlt
+
+    lgdt [Pointer]
+    jmp GDT64.Code:LM_START
+
 
 GDT64:                           ; Global Descriptor Table (64-bit).
     .Null: equ $ - GDT64         ; The null descriptor.
@@ -67,4 +101,7 @@ LM_START:
 
 
 times 2048 db 0x0
-
+align 4096                  ; Each entry is 8 bytes and there is
+section .bss
+_l4_page_tbl: resb 4096
+_l3_page_tbl: resb 4096
