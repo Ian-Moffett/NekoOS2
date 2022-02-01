@@ -40,7 +40,7 @@ int _start() {
 
     // Set frequency.
     pit_set_freq(5);
-    set_idt_entry(0x20, gp_fault_ex, INT_GATE_FLAGS);
+    set_idt_entry(0x20, irq0_isr, INT_GATE_FLAGS);
     outportb(0x21, 0xFF);
     outportb(0x21, inportb(0x21) ^ 0x1);    // 11111111 ^ 00000001 => 11111110
     __asm__ __volatile__("sti");
