@@ -1,5 +1,6 @@
 bits 32
 global _kentry
+extern _start
 
 _kentry:
     ; EDI => dest.
@@ -7,14 +8,14 @@ _kentry:
     push edi
     xor eax, eax
     mov ecx, 1024
-    rep stosd       ; (*EDI++ = EAX) REP = repeat
+    rep stosd       ; (*EDI = EAX++) REP = repeat
 
     mov edi, _l3_page_tbl
     mov ecx, 1024
     rep stosd
 
     pop edi
-    mov cr3, edi                ; Tells CPU where page table is.
+    mov cr3, edi                ; "Hey, CPU this is where the page table will be."
     mov eax, _l3_page_tbl
     add eax, 3
     mov [edi], eax
@@ -37,14 +38,14 @@ _kentry:
     or eax, 1 << 8
     wrmsr
 
-    ; Enable paging.
+    ; "Yo CPU bro, we are using paging."
     mov eax, cr0
     or eax, (1 << 31) | 0x1
     mov cr0, eax
 
     lgdt [Pointer]
+    hlt
     jmp GDT64.Code:LM_START
-
 
 GDT64:                           ; Global Descriptor Table (64-bit).
     .Null: equ $ - GDT64         ; The null descriptor.
@@ -96,11 +97,14 @@ LM_START:
     mov ss, ax
     mov fs, ax
     mov gs, ax
+    jmp POST_EXEC
+
+POST_EXEC:
     hlt
+    jmp POST_EXEC
 
 
 
-times 2048 db 0x0
 align 4096                  ; Each entry is 8 bytes and there is
 section .bss
 _l4_page_tbl: resb 4096
