@@ -6,6 +6,9 @@ all:
 	gcc -c -m32 src/x86_64/kernel/drivers/impl/VGA.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/vga.o
 	gcc -c -m32 src/x86_64/kernel/interrupts/impl/IDT.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/idt.o
 	gcc -c -m32 src/x86_64/kernel/drivers/impl/IO.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/io.o
+	gcc -c -m32 src/x86_64/kernel/drivers/impl/PIT.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/pit.o
+	gcc -c -m32 src/x86_64/kernel/interrupts/impl/exceptions.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/excp.o
+	gcc -c -m32 src/x86_64/kernel/interrupts/impl/ISR.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/isr.o
 	ld -melf_i386 -Tlink.ld objres/*.o obj/*.o --oformat binary -o bin/kernel.bin
 	cat bin/bootloader.bin bin/kernel.bin > bin/NekoOS.bin
 	@ # Prepare the image.
@@ -17,7 +20,7 @@ burn_usb:
 	sudo dd if=NekoOS.img of=/dev/sdb
 
 danger:
-	make; make burn_usb run
+	make all burn_usb run
 
 
 run:

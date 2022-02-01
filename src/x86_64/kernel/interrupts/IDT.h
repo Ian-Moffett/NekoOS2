@@ -3,6 +3,9 @@
 
 #include "../drivers/IO.h"
 
+#define TRAP_GATE_FLAGS 0x8F
+#define INT_GATE_FLAGS 0x8E
+
 typedef struct {
     unsigned short isr_addr_low;
     unsigned short kernel_cs;

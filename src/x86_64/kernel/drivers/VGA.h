@@ -4,6 +4,8 @@
 #include "../util/strings.h"
 
 void clearScreen(char** vga, unsigned char bg, unsigned char fg);
-void kputs(const char* str, char** vga, unsigned char nlDepth);
+void kputs(const char* string, char** vga, unsigned short nlDepth);
+void kputs_dec(int number, char** vga, unsigned short nlDepth);
+void kputs_hex(int hex_num, char** vga, unsigned short nlDepth);
 
 #endif
