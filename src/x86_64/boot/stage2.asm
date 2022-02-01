@@ -40,6 +40,9 @@ _stage2:
     mov si, paging_msg
     call puts
 
+    mov si, page_tbl
+    call puts
+
     ; Tell CPU we are using paging.
     mov eax, cr0
     or eax, (1 << 31) | 0x1
@@ -62,6 +65,7 @@ rm_ret: ret
 
 
 paging_msg: db "__PAGING_INITIALIZED__", 0xD, 0xA, 0
+page_tbl: db "0000000000000000-0000000040000000 0000000040000000 -rw", 0xD, 0xA, 0
 
 
 GDT64:                           ; Global Descriptor Table (64-bit).
@@ -115,6 +119,10 @@ LM_START:
     mov fs, ax
     mov gs, ax
     hlt
+
+
+
+times 2048 db 0x0
 
 align 4096
 section .bss

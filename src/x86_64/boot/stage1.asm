@@ -46,8 +46,9 @@ _start:
 
     mov dl, [DRIVE_NUM]
     call disk_load
+    call disk_load1
 
-    call 0x500     ; Pass control to stage 2.
+    jmp 0x1000     ; Pass control to stage 2.
 
 DRIVE_NUM: db 0
 
@@ -76,6 +77,14 @@ dap:
     db 0x10     ; Size of DAP.
     db 0x0      ; Unused.
     dw 0x7      ; Sectors to read.
+    dw 0x1000   ; Dest buffer.
+    dw 0x0      ; Dest segment.
+    dq 0x1      ; Start sector.
+
+dap1:
+    db 0x10     ; Size of DAP.
+    db 0x0      ; Unused.
+    dw 0x1      ; Sectors to read.
     dw 0x500    ; Dest buffer.
     dw 0x0      ; Dest segment.
     dq 0x1      ; Start sector.
@@ -83,6 +92,13 @@ dap:
 disk_load:
     mov ah, 0x42
     mov si, dap
+    int 0x13
+    jc disk_error
+    ret
+
+disk_load1:
+    mov ah, 0x42
+    mov si, dap1
     int 0x13
     jc disk_error
     ret
