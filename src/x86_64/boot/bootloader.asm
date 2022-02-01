@@ -37,10 +37,12 @@ _start:
     mov cx, 0xF
     mov dx, 0x4240
     mov ah, 0x86
- 
+    int 0x15
+
     mov cx, 0xF
     mov dx, 0x4240
     mov ah, 0x86
+    int 0x15
 
     mov dl, [DRIVE_NUM]
     call disk_laod
