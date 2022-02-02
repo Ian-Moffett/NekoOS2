@@ -30,7 +30,7 @@ struct _FS_NODE {
     void(*close)(struct _FS_NODE*);
     dirent_t*(*readdir)(struct _FS_NODE*, unsigned int);
     struct _FS_NODE*(*finddir)(struct _FS_NODE*, char* name);
-
+    struct _FS_NODE* ptr;
 };
   
 unsigned int read_fs(struct _FS_NODE* node, unsigned int offset, unsigned int size, unsigned char* buffer);

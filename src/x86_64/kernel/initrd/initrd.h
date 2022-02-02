@@ -2,6 +2,8 @@
 #define INITRD_H
 
 #include "FS.h"
+#include "../memory/heap.h"
+#include "../util/strings.h"
 
 typedef struct {
     unsigned int nfiles;     // # of files in ramdisk.
