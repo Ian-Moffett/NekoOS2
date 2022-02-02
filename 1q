@@ -74,12 +74,16 @@ int _start() {
     sleep(6);
     kputs("__MOUSE_INIT_START", &vga, 1);
     sleep(6);
-    kputs("ENABLING MOUSE AND STREAMING RESPONSES..", &vga, 2);
+    kputs("ENABLING MOUSE AND STREAMING RESPONSES..", &vga, 1);
     sleep(6);
-    kputs("<=== PLEASE SHOW MOUSE ACTIVITY TO CONTINUE. ===> ", &vga, 1);
     mouse_install();
     
-    while (!(inportb(0x60) & 0x1));
+    while  (1) {
+        mouse_wait(1);
+        kputs_dec(mouse_read() & 3, &vga, 1);
+    }
+
+    sleep(25);
 
     heap_init((void*)0x10000, 3000);
     kputs("__HEAP_INITIALIZED__", &vga, 1);
