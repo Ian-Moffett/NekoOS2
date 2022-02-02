@@ -5,7 +5,6 @@
 #include "interrupts/exceptions.h"
 #include "memory/heap.h"
 #include "memory/paging.h"
-#include "initrd/initrd.h"
 
 
 char* vga = (char*)0xB8000;
@@ -84,7 +83,6 @@ int _start() {
     kputs("__PAGING_INITIALIZED__", &vga, 1);
     sleep(6);
     kputs("LOADING INITIAL RAMDISK..", &vga, 1);
-    init_initrd(0x500);
     sleep(29);
     clearScreen(&vga, 0x1, 0xE);
 
