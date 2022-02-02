@@ -46,15 +46,24 @@ int _start() {
     outportb(0x21, inportb(0x21) ^ 0x1);    // 11111111 ^ 00000001 => 11111110
     __asm__ __volatile__("sti");
     clearScreen(&vga, 0x1, 0xE);
-    
-    sleep(6);
+
+    sleep(10);
+    kputs("PIT FREQUENCY => 5", &vga, 1);
+    sleep(10);
+    kputs("IRQ 0 MAPPED TO: irq0_isr", &vga, 1);
+    sleep(10);
+    kputs("IMR => 11111111", &vga, 1);
+    sleep(10);
+    kputs("IMR => 11111110", &vga, 2);
+    sleep(30);
+
     heap_init((void*)0x10000, 3000);
     kputs("__HEAP_INITIALIZED__", &vga, 1);
-    sleep(6);
+    sleep(10);
     kputs("HEAP BEGIN: 0x10000", &vga, 1);
-    sleep(6);
+    sleep(10);
     kputs("HEAP LIMIT: 3000", &vga, 1);
-    sleep(25);
+    sleep(30);
     clearScreen(&vga, 0x1, 0xE);
 
     kputs("Hello Master!~ <3", &vga, 1);  
