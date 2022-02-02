@@ -4,7 +4,6 @@
 #include "interrupts/IDT.h"
 #include "interrupts/exceptions.h"
 #include "memory/heap.h"
-#include "memory/paging.h"
 
 
 char* vga = (char*)0xB8000;
@@ -79,10 +78,6 @@ int _start() {
     kputs("HEAP BEGIN: 0x10000", &vga, 1);
     sleep(6);
     kputs("HEAP LIMIT: 3000", &vga, 1);
-    sleep(6);
-    kputs("__PAGING_INITIALIZED__", &vga, 1);
-    sleep(6);
-    kputs("LOADING INITIAL RAMDISK..", &vga, 1);
     sleep(29);
     clearScreen(&vga, 0x1, 0xE);
 
