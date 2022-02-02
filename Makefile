@@ -9,6 +9,8 @@ all:
 	gcc -c -m32 src/x86_64/kernel/drivers/impl/PIT.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/pit.o
 	gcc -c -m32 src/x86_64/kernel/interrupts/impl/exceptions.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/excp.o
 	gcc -c -m32 src/x86_64/kernel/interrupts/impl/ISR.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/isr.o
+	gcc -c -m32 src/x86_64/kernel/memory/impl/pmm.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/pmm.o
+	gcc -c -m32 src/x86_64/kernel/memory/impl/heap.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/heap.o
 	ld -melf_i386 -Tlink.ld objres/*.o obj/*.o --oformat binary -o bin/kernel.bin
 	cat bin/bootloader.bin bin/kernel.bin > bin/NekoOS.bin
 	@ # Prepare the image.

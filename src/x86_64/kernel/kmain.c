@@ -4,6 +4,7 @@
 #include "interrupts/IDT.h"
 #include "interrupts/exceptions.h"
 #include "interrupts/ISR.h"
+#include "memory/heap.h"
 
 char* vga = (char*)0xB8000;
 
@@ -44,9 +45,19 @@ int _start() {
     outportb(0x21, 0xFF);
     outportb(0x21, inportb(0x21) ^ 0x1);    // 11111111 ^ 00000001 => 11111110
     __asm__ __volatile__("sti");
-
     clearScreen(&vga, 0x1, 0xE);
-    kputs("Nyaa!~", &vga, 1);
-    kputs("Hello Master!~", &vga, 2);
+    
+    sleep(6);
+    heap_init((void*)0x10000, 3000);
+    kputs("__HEAP_INITIALIZED__", &vga, 1);
+    sleep(6);
+    kputs("HEAP BEGIN: 0x10000", &vga, 1);
+    sleep(6);
+    kputs("HEAP LIMIT: 3000", &vga, 1);
+    sleep(25);
+    clearScreen(&vga, 0x1, 0xE);
+
+    kputs("Hello Master!~ <3", &vga, 1);  
+
     return 0; 
 }
