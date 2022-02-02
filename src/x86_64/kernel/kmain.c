@@ -5,6 +5,7 @@
 #include "interrupts/exceptions.h"
 #include "interrupts/ISR.h"
 #include "memory/heap.h"
+#include "memory/paging.h"
 
 char* vga = (char*)0xB8000;
 
@@ -63,8 +64,13 @@ int _start() {
     kputs("HEAP BEGIN: 0x10000", &vga, 1);
     sleep(10);
     kputs("HEAP LIMIT: 3000", &vga, 1);
+    sleep(10);
+    kputs("__PAGING_INITIALIZED__", &vga, 1);
+    sleep(10);
+    kputs("0000000000000000-0000000000400000 0000000000400000 -rw", &vga, 1);
     sleep(30);
     clearScreen(&vga, 0x1, 0xE);
+    init_paging();
 
     kputs("Hello Master!~ <3", &vga, 1);  
 
