@@ -102,7 +102,7 @@ disk_error:
 dap:
     db 0x10     ; DAP structure size.
     db 0x0      ; Unused.
-    dw 0xA      ; Sectors to read.
+    dw 0xF      ; Sectors to read.
     dw 0x1000   ; Dest address.
     dw 0x0      ; Dest segment.
     dq 0x1      ; Start sector.
