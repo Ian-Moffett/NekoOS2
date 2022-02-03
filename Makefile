@@ -8,9 +8,10 @@ all:
 	gcc -c -m64 src/x86_64/kernel/drivers/impl/IO.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/io.o
 	gcc -c -m64 src/x86_64/kernel/drivers/impl/PIT.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/pit.o
 	gcc -c -m64 src/x86_64/kernel/interrupts/impl/exceptions.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/excp.o
+	gcc -c -m64 src/x86_64/kernel/interrupts/impl/IDT.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/idt.o
 	gcc -c -m64 src/x86_64/kernel/memory/impl/pmm.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/pmm.o
 	gcc -c -m64 src/x86_64/kernel/memory/impl/heap.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/heap.o
-	nasm -felf64 src/x86_64/kernel/cpu/impl/longmode.S -o obj/lma.o
+	nasm -felf64 src/x86_64/kernel/cpu/impl/switchutils.asm -o obj/lma.o
 	ld -melf_x86_64 -Tlink.ld objres/*.o obj/*.o --oformat binary -o bin/kernel.bin
 	cat bin/bootloader.bin bin/kernel.bin > bin/NekoOS.bin
 	@ # Prepare the image.
