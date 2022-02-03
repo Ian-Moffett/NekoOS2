@@ -19,21 +19,6 @@ void panic(const char* const PANIC_MESSAGE) {
     __asm__ __volatile__("cli; hlt");
 }
 
-unsigned int ticks = 0;
-
-
-__attribute__((interrupt)) static void _irq0_isr(int_frame64_t*) {
-    __asm__ __volatile__("cli");
-
-    ++ticks;
-
-    if (ticks > 3000) {
-        ticks = 0;
-    }
-
-    outportb(0x20, 0x20);
-    __asm__ __volatile__("sti");
-}
 
 void _lm_entry();
 
@@ -64,10 +49,10 @@ int _start() {
 
     // Set frequency.
     
-    // pit_set_freq(5);
-    // set_idt_entry(0x20, _irq0_isr, INT_GATE_FLAGS);
-    // outportb(0x21, 0xFF);
-    // outportb(0x21, inportb(0x21) ^ 0x1);    // 11111111 ^ 00000001 => 11111110
+    pit_set_freq(5);
+    set_idt_entry(0x20, _irq0_isr, INT_GATE_FLAGS);
+    outportb(0x21, 0xFF);
+    outportb(0x21, inportb(0x21) ^ 0x1);    // 11111111 ^ 00000001 => 11111110
     __asm__ __volatile__("sti");
     clearScreen(&vga, 0x1, 0xE);
 
@@ -78,6 +63,15 @@ int _start() {
     init_vmm();
 
     kputs("Hello Master!~ <3", &vga, 1);  
+
+    /*
+     * TODO: Allow interrupts to work in usermode and use
+     * context switching to switch from user to kernel
+     * to handle those interrupts and called the ISR's.
+     */
+
+    outportb(0x21, 0xFF);
+    __asm__ __volatile__("cli");
 
     return 0; 
 }
