@@ -22,7 +22,7 @@ void panic(const char* const PANIC_MESSAGE) {
 unsigned int ticks = 0;
 
 
-__attribute__((interrupt)) static void _irq0_isr(int_frame_t*) {
+__attribute__((interrupt)) static void _irq0_isr(int_frame64_t*) {
     __asm__ __volatile__("cli");
 
     ++ticks;
@@ -38,7 +38,6 @@ __attribute__((interrupt)) static void _irq0_isr(int_frame_t*) {
  void _lm_entry();
 
 int _start() {
-    /*
     idt_install();
 
     // Exceptions.
@@ -55,7 +54,7 @@ int _start() {
     set_idt_entry(0xD, gp_fault_ex, TRAP_GATE_FLAGS);
     set_idt_entry(0xE, page_fault_ex, TRAP_GATE_FLAGS);
     set_idt_entry(0xF, float_ex, TRAP_GATE_FLAGS);
-    */
+
 
     // IMR is 8 bits wide. 0xF => 1111, 0xFF => 11111111.
     // outportb(0x20, 0xFF);

@@ -1,15 +1,20 @@
 #include "../IDT.h"
 
-static idt_entry_t idt[256];
+static idt_entry64_t idt64[256];
 static idtr_t idtr;
 
 
 void set_idt_entry(unsigned char entry, void* isr, unsigned char flags) {
-    idt[entry].isr_addr_low = (unsigned int)isr & 0xFFFF;
-    idt[entry].kernel_cs = 0x08;
-    idt[entry].reserved = 0x0;
-    idt[entry].attr = flags;
-    idt[entry].isr_addr_high = ((unsigned int)isr >> 16) & 0xFFFF;
+    uint64_t addr = (uint64_t)isr;
+    idt64[entry].isr_addr_low = addr & 0xFFFF;
+    idt64[entry].isr_addr_middle = (addr & 0xFFFF0000) >> 16;
+    idt64[entry].isr_addr_high = (addr & 0xFFFFFFFF00000000) >> 32;
+    idt64[entry].dpl = 0;
+    idt64[entry].p = 1;
+    idt64[entry].attr = flags;
+    idt64[entry].kernel_cs = 0x08;
+    idt64[entry].reserved = 0x0;
+    idt64[entry].reserved2 = 0x0;
 }
 
 
@@ -26,7 +31,7 @@ void idt_install() {
     outportb(0x21, 0x0);
     outportb(0xA1, 0x0);
 
-    idtr.limit = (unsigned short)(sizeof(idt));
-    idtr.base = (unsigned int)&idt;
+    idtr.limit = (unsigned short)(sizeof(idt64));
+    idtr.base = (uint64_t)&idt64;
     __asm__ __volatile__("lidt %0" : : "memory"(idtr));
 }
