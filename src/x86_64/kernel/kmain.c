@@ -67,7 +67,7 @@ int _start() {
     /*
      * TODO: Allow interrupts to work in usermode and use
      * context switching to switch from user to kernel
-     * to handle those interrupts and called the ISR's.
+     * to handle those interrupts and call the ISR's.
      */
 
     outportb(0x21, 0xFF);
