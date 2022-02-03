@@ -22,7 +22,7 @@ void panic(const char* const PANIC_MESSAGE) {
 unsigned int ticks = 0;
 
 
-__attribute__((interrupt)) static void _irq0_isr(int_frame64_t*) {
+__attribute__((interrupt)) static void _irq0_isr(int_frame_t*) {
     __asm__ __volatile__("cli");
 
     ++ticks;
@@ -55,19 +55,16 @@ int _start() {
     set_idt_entry(0xE, page_fault_ex, TRAP_GATE_FLAGS);
     set_idt_entry(0xF, float_ex, TRAP_GATE_FLAGS);
 
-
     // IMR is 8 bits wide. 0xF => 1111, 0xFF => 11111111.
     // outportb(0x20, 0xFF);
 
     // Set frequency.
     
-    /*
-    pit_set_freq(5);
-    set_idt_entry(0x20, _irq0_isr, INT_GATE_FLAGS);
-    outportb(0x21, 0xFF);
-    outportb(0x21, inportb(0x21) ^ 0x1);    // 11111111 ^ 00000001 => 11111110
+    // pit_set_freq(5);
+    // set_idt_entry(0x20, _irq0_isr, INT_GATE_FLAGS);
+    // outportb(0x21, 0xFF);
+    // outportb(0x21, inportb(0x21) ^ 0x1);    // 11111111 ^ 00000001 => 11111110
     __asm__ __volatile__("sti");
-    */
     clearScreen(&vga, 0x1, 0xE);
 
     // while (!(inportb(0x60) & 0x1));
