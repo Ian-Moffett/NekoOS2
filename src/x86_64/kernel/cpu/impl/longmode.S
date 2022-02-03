@@ -3,6 +3,7 @@ global _lm_entry
 global _context_switch
 
 _lm_entry:
+
     ; Zero out page tables.
     mov edi, _l4_pge_tbl
     push edi                ; Save EDI.
@@ -98,7 +99,7 @@ longmode_nya:
     mov es, ax
     mov fs, ax
     mov gs, ax 
-    call _start 
+    call _start
     call _context_switch
 
 post_exec:
