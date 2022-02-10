@@ -15,7 +15,7 @@ void cso_ex(int_frame64_t*);
 void invld_tss_ex(int_frame64_t*);
 void seg_np_ex(int_frame64_t*);
 void ss_fault_ex(int_frame64_t*);
-void gp_fault_ex(int_frame64_t*);
+void gp_fault_ex(int_frame64_t*, int);
 void page_fault_ex(int_frame64_t*);
 void float_ex(int_frame64_t*);
 

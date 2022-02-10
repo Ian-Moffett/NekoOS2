@@ -1,7 +1,7 @@
 #include "../exceptions.h"
 
 void panic(const char* const PANIC_MESSAGE);
-
+void panic_code(const char* const PANIC_MESSAGE, int code);
 
 void div_0_ex(int_frame64_t*) {
     panic("DIVIDE ERROR (0x0).");
@@ -43,8 +43,8 @@ void ss_fault_ex(int_frame64_t*) {
     panic("STACK SEGMENT FAULT (0xC).");
 }
 
-void gp_fault_ex(int_frame64_t*) {
-    panic("GENERAL PROTECTION FAULT (0xD).");
+void gp_fault_ex(int_frame64_t*, int code) {
+    panic_code("GENERAL PROTECTION FAULT (0xD).", code);
 }
 
 void page_fault_ex(int_frame64_t* regs) {

@@ -1,7 +1,9 @@
 all:	
 	nasm -fbin src/x86_64/boot/bootloader.asm -o bin/bootloader.bin
 	nasm -felf64 src/x86_64/kernel/kernel.asm -o objres/kasm.o
+	nasm -felf64 src/x86_64/kernel/cpu/impl/TSS.asm -o objres/TSSASM.o
 	gcc -c -m64 src/x86_64/kernel/kmain.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o objres/kmain.o
+	gcc -c -m64 src/x86_64/kernel/cpu/impl/TSS.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o objres/tss.o
 	gcc -c -m64 src/x86_64/kernel/util/impl/strings.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/strings.o
 	gcc -c -m64 src/x86_64/kernel/drivers/impl/VGA.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/vga.o
 	gcc -c -m64 src/x86_64/kernel/drivers/impl/mouse.c -ffreestanding -fno-pie -fstack-protector -mgeneral-regs-only -o obj/mouse.o

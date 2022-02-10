@@ -1,9 +1,11 @@
 bits 32
 global _lm_entry
 global _context_switch
+global GDT_TSS
 
-_lm_entry:
+extern init_tss
 
+_lm_entry:  
     ; Zero out page tables.
     mov edi, _l4_pge_tbl
     push edi                ; Save EDI.
@@ -46,16 +48,19 @@ _lm_entry:
 
     lgdt [GDT64.Pointer]
     ; 0x08 is index in GDT.
+
     jmp 0x08:longmode_nya
 
 GDT64:                           ; Global Descriptor Table (64-bit).
     .Null: equ $ - GDT64         ; The null descriptor.
-    dw 0xFFFF                    ; Limit (low).
-    dw 0                         ; Base (low).
-    db 0                         ; Base (middle)
-    db 0                         ; Access.
-    db 1                         ; Granularity.
-    db 0                         ; Base (high).
+    ; dw 0xFFFF                    ; Limit (low).
+    ; dw 0                         ; Base (low).
+    ; db 0                         ; Base (middle)
+    ; db 0                         ; Access.
+    ; db 1                         ; Granularity.
+    ; db 0                         ; Base (high).
+    dd 0x0
+    dd 0x0
     .Code: equ $ - GDT64         ; The code descriptor.
     dw 0                         ; Limit (low).
     dw 0                         ; Base (low).
@@ -84,6 +89,9 @@ GDT64:                           ; Global Descriptor Table (64-bit).
     db 11110010b                 ; Access (read/write).
     db 00000000b                 ; Granularity.
     db 0 
+    .TSS:
+        dq 0
+        dq 0
     .Pointer:                    ; The GDT-pointer.
     dw $ - GDT64 - 1             ; Limit.
     dq GDT64                     ; Base.
@@ -93,13 +101,23 @@ GDT64:                           ; Global Descriptor Table (64-bit).
 bits 64
 extern _start
 ; We are now in long mode UwU.
+
+GDT_TSS: dq 0
+
 longmode_nya: 
     xor ax, ax
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax 
-    call _start
+    call _start 
+    ; mov rax, cr0
+    ; xor rax, (1 << 3)
+    ; mov cr0, rax
+
+    mov rax, GDT64.TSS
+    mov [GDT_TSS], rax
+    call init_tss 
     call _context_switch
 
 post_exec:
@@ -125,7 +143,10 @@ _context_switch:
     iretq
 
 usermode_nyaa:
-    jmp $
+    int 0x0
+    jmp yeet
+
+yeet: jmp $
 
 _context_switch_struct_nyaa:
     times 15 dq 0       ; Zeros out register space.

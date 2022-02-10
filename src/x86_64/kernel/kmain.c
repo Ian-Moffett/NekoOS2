@@ -19,6 +19,16 @@ void panic(const char* const PANIC_MESSAGE) {
     __asm__ __volatile__("cli; hlt");
 }
 
+void panic_code(const char* const PANIC_MESSAGE, int code) {
+    outportb(0x3D4, 0x0A);
+    outportb(0x3D5, 0x20);
+    clearScreen(&vga, 0x4, 0xFE);
+    kputs("***KERNEL PANIC***", &vga, 2);
+    kputs(PANIC_MESSAGE, &vga, 1);
+    kputs_dec(code, &vga, 1);
+    __asm__ __volatile__("cli; hlt");
+}
+
 
 void _lm_entry();
 
